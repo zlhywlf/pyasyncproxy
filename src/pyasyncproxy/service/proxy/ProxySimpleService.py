@@ -8,7 +8,7 @@ from typing import override
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
 from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
 from pyasyncproxy.service.proxy.ProxyEngine import ProxyEngine
-from pyasyncproxy.service.proxy.ProxyService import ProxyService
+from pyasyncproxy.service.ProxyService import ProxyService
 
 
 class ProxySimpleService(ProxyService):
