@@ -7,6 +7,7 @@ import logging
 from collections.abc import Mapping
 from typing import override
 
+from pyasyncproxy.model.dto.ProxyContext import ProxyContext
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
 from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
 from pyasyncproxy.model.dto.ProxyRouteInfo import ProxyRouteChecker
@@ -29,9 +30,10 @@ class ProxySimpleEngine(ProxyEngine):
     async def process(self, data: ProxyRequest) -> ProxyResponse:
         node_name: str | None = self._proxy_tree.name
         response: ProxyResponse | None = None
+        ctx = ProxyContext(data=data)
         while node_name:
             node = self._node_map[node_name]
-            checker = await node.handle(data)
+            checker = await node.handle(ctx)
             response = checker.response
             logger.info(f"handle node={checker}")
             node_name = self._get_next_node(checker)

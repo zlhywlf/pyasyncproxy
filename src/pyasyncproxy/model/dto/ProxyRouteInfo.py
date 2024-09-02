@@ -5,13 +5,14 @@ Copyright (c) 2023-present 善假于PC也 (zlhywlf).
 
 from pydantic import BaseModel
 
+from pyasyncproxy.cnst.ProxyCheckerEnum import ProxyCheckerEnum
 from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
 
 
 class ProxyRouteType(BaseModel):
     """route type."""
 
-    type: str
+    type: ProxyCheckerEnum
 
 
 class ProxyRouteInfo(ProxyRouteType):
@@ -24,4 +25,4 @@ class ProxyRouteChecker(ProxyRouteType):
     """route type checker."""
 
     curr_node_name: str
-    response: ProxyResponse
+    response: ProxyResponse | None = None

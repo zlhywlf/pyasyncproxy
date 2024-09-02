@@ -26,6 +26,10 @@ class ProjectEnv(BaseSettings, env_prefix="PROXY_", env_file=".env", env_file_en
     process_keywords: list[str] | None = Field(default=None, description="process keywords")
     project_name: str = Field(default="pyasyncproxy", description="project name")
     start_cmd: list[str] | None = Field(default=None, description="start cmd")
+    forward_url_key: str = Field(default="x-proxy-url", description="proxy url's key in the headers")
+    forward_method_key: str = Field(default="x-proxy-method", description="proxy method's key in the headers")
+    exclude_headers: list[str] | None = Field(default=None, description="exclude keys from headers")
+    proxy_path: pathlib.Path = Field(default=pathlib.Path.cwd() / "proxy.json", description="proxy config path")
 
     @computed_field
     def project_banner(self) -> str:

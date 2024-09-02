@@ -1,0 +1,24 @@
+{
+  "name": "ProxyHeaderNode",
+  "nodes": [
+    {
+      "name": "ProxyHeaderNode",
+      "routes": [
+        {
+          "next_node_name": "ProxyHttpNode",
+          "type": "ok"
+        },
+        {
+          "next_node_name": "ProxyErrorNode",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "name": "ProxyHttpNode"
+    },
+    {
+      "name": "ProxyErrorNode"
+    }
+  ]
+}
