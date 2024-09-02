@@ -3,7 +3,6 @@
 Copyright (c) 2023-present 善假于PC也 (zlhywlf).
 """
 
-import logging
 from types import TracebackType
 from typing import Self, override
 
@@ -12,8 +11,6 @@ import httpx
 from pyasyncproxy.client.HttpClient import HttpClient
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
 from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
-
-logger = logging.getLogger(__name__)
 
 
 class HttpxClient(HttpClient):
@@ -43,7 +40,6 @@ class HttpxClient(HttpClient):
             content=req.content,
             timeout=httpx.Timeout(timeout=req.timeout),
         )
-        logger.info(f"response is {res}")
         return ProxyResponse(
             content=res.content,
             code=res.status_code,

@@ -27,6 +27,12 @@ class ProxyHeaderNode(ProxyNode):
         if not url or not method:
             ctx.msg = f"{self._env.forward_url_key} and {self._env.forward_method_key} must be in headers"
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
+        timeout = data.headers.get(self._env.forward_timeout)
+        if timeout and not timeout.isnumeric():
+            ctx.msg = f"{timeout} must be numeric"
+            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
+        data.business_id = data.headers.get(self._env.business_id_key)
+        data.timeout = float(timeout) if timeout else data.timeout
         data.url = url
         data.method = method
         data.headers = {k: v for k, v in data.headers.items() if k not in (self._env.exclude_headers or [])}

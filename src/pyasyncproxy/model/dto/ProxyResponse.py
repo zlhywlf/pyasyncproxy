@@ -12,6 +12,6 @@ class ProxyResponse(BaseModel):
     """Response for the route of /proxy."""
 
     code: int
-    headers: Mapping[str, str]
+    headers: Mapping[str, str] | None = None
     media_type: str
     content: bytes

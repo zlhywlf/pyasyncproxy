@@ -12,8 +12,9 @@ class ProxyRequest(BaseModel):
     """Request parameters for the route of /proxy."""
 
     request_id: int
+    business_id: str | None = None
     url: str
     headers: Mapping[str, str]
     method: str
     content: bytes
-    timeout: int = 200
+    timeout: float = 200

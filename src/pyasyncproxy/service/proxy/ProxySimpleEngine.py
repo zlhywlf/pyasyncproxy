@@ -35,7 +35,7 @@ class ProxySimpleEngine(ProxyEngine):
             node = self._node_map[node_name]
             checker = await node.handle(ctx)
             response = checker.response
-            logger.info(f"handle node={checker}")
+            logger.info(checker)
             node_name = self._get_next_node(checker)
         if not response:
             msg = f"process failure for {self._proxy_tree} | {data}"

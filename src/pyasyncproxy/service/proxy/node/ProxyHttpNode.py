@@ -3,6 +3,7 @@
 Copyright (c) 2023-present 善假于PC也 (zlhywlf).
 """
 
+import logging
 from typing import override
 
 from pyasyncproxy.client.HttpClient import HttpClient
@@ -10,6 +11,8 @@ from pyasyncproxy.cnst.ProxyCheckerEnum import ProxyCheckerEnum
 from pyasyncproxy.model.dto.ProxyContext import ProxyContext
 from pyasyncproxy.model.dto.ProxyRouteInfo import ProxyRouteChecker
 from pyasyncproxy.service.proxy.ProxyNode import ProxyNode
+
+logger = logging.getLogger(__name__)
 
 
 class ProxyHttpNode(ProxyNode):
@@ -21,6 +24,7 @@ class ProxyHttpNode(ProxyNode):
 
     @override
     async def handle(self, ctx: ProxyContext) -> ProxyRouteChecker:
+        logger.info(ctx.data)
         async with self._client_clazz() as client:
             res = await client.request(ctx.data)
         return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OK, response=res)
