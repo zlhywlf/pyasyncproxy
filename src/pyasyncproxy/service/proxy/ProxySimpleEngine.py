@@ -7,6 +7,7 @@ import logging
 from collections.abc import Mapping
 from typing import override
 
+from pyasyncproxy.env.ProjectEnv import ProjectEnv
 from pyasyncproxy.model.dto.ProxyContext import ProxyContext
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
 from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
@@ -21,21 +22,22 @@ logger = logging.getLogger(__name__)
 class ProxySimpleEngine(ProxyEngine):
     """default engine."""
 
-    def __init__(self, proxy_tree: ProxyRootTree, node_map: Mapping[str, ProxyNode]) -> None:
+    def __init__(self, proxy_tree: ProxyRootTree, node_map: Mapping[str, ProxyNode], env: ProjectEnv) -> None:
         """Init."""
         self._proxy_tree = proxy_tree
         self._node_map = node_map
+        self._env = env
 
     @override
     async def process(self, data: ProxyRequest) -> ProxyResponse:
         node_name: str | None = self._proxy_tree.name
         response: ProxyResponse | None = None
-        ctx = ProxyContext(data=data)
+        ctx = ProxyContext(data=data, env=self._env)
         while node_name:
             node = self._node_map[node_name]
             checker = await node.handle(ctx)
             response = checker.response
-            logger.info(checker)
+            logger.info(f"{ctx} {checker}")
             node_name = self._get_next_node(checker)
         if not response:
             msg = f"process failure for {self._proxy_tree} | {data}"

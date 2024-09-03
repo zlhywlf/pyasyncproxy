@@ -3,7 +3,6 @@
 Copyright (c) 2023-present 善假于PC也 (zlhywlf).
 """
 
-import logging
 from typing import override
 
 import httpx
@@ -14,15 +13,12 @@ from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
 from pyasyncproxy.model.dto.ProxyRouteInfo import ProxyRouteChecker
 from pyasyncproxy.service.proxy.ProxyNode import ProxyNode
 
-logger = logging.getLogger(__name__)
-
 
 class ProxyHttpxNode(ProxyNode):
     """Request target service."""
 
     @override
     async def handle(self, ctx: ProxyContext) -> ProxyRouteChecker:
-        logger.info(ctx.data)
         mounts = (
             {
                 "http://": httpx.AsyncHTTPTransport(proxy=ctx.proxy_url),

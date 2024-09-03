@@ -4,7 +4,6 @@ Copyright (c) 2023-present 善假于PC也 (zlhywlf).
 """
 
 import logging
-from collections.abc import Mapping
 
 from starlette.applications import Starlette
 from starlette.requests import Request
@@ -15,11 +14,8 @@ from pyasyncproxy.common.Snowflake import Snowflake
 from pyasyncproxy.env.ProjectEnv import ProjectEnv
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
 from pyasyncproxy.model.dto.ProxyTree import ProxyRootTree
-from pyasyncproxy.service.proxy.node.ProxyErrorNode import ProxyErrorNode
-from pyasyncproxy.service.proxy.node.ProxyHeaderNode import ProxyHeaderNode
-from pyasyncproxy.service.proxy.node.ProxyHttpxNode import ProxyHttpxNode
-from pyasyncproxy.service.proxy.ProxyNode import ProxyNode
 from pyasyncproxy.service.proxy.ProxySimpleEngineFactory import ProxySimpleEngineFactory
+from pyasyncproxy.service.proxy.ProxySimpleNodeFactory import ProxySimpleNodeFactory
 from pyasyncproxy.service.proxy.ProxySimpleService import ProxySimpleService
 
 logger = logging.getLogger(__name__)
@@ -28,13 +24,9 @@ env = ProjectEnv()
 snowflake = Snowflake(env.worker_id, env.data_center_id)
 with env.proxy_path.open("r") as f:
     proxy_tree = ProxyRootTree.model_validate_json("".join(f.readlines()))
-node_map: Mapping[str, ProxyNode] = {
-    ProxyHttpxNode.__name__: ProxyHttpxNode(),
-    ProxyHeaderNode.__name__: ProxyHeaderNode(env),
-    ProxyErrorNode.__name__: ProxyErrorNode(),
-}
-proxy_engine_factory = ProxySimpleEngineFactory(node_map)
-proxy_engine = ProxySimpleEngineFactory(node_map).create_engine(proxy_tree)
+nodes_map = ProxySimpleNodeFactory().collect_nodes()
+proxy_engine_factory = ProxySimpleEngineFactory(nodes_map, env)
+proxy_engine = proxy_engine_factory.create_engine(proxy_tree)
 service = ProxySimpleService(proxy_engine)
 
 
