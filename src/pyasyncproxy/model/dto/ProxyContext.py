@@ -13,3 +13,4 @@ class ProxyContext(BaseModel):
 
     data: ProxyRequest
     msg: str | None = None
+    proxy_url: str | None = None

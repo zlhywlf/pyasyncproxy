@@ -67,7 +67,7 @@ class ProcessManager:
             ):
                 proc.send_signal(self._signal)
                 logger.info(f"The {self._app}:{proc.pid} has been closed")
-                has_closed = not has_closed
+                has_closed = True
         if not has_closed:
             logger.warning(f"The {self._app} not found")
 

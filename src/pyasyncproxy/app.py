@@ -11,14 +11,13 @@ from starlette.requests import Request
 from starlette.responses import Response
 from starlette.routing import Route
 
-from pyasyncproxy.client.HttpxClient import HttpxClient
 from pyasyncproxy.common.Snowflake import Snowflake
 from pyasyncproxy.env.ProjectEnv import ProjectEnv
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
 from pyasyncproxy.model.dto.ProxyTree import ProxyRootTree
 from pyasyncproxy.service.proxy.node.ProxyErrorNode import ProxyErrorNode
 from pyasyncproxy.service.proxy.node.ProxyHeaderNode import ProxyHeaderNode
-from pyasyncproxy.service.proxy.node.ProxyHttpNode import ProxyHttpNode
+from pyasyncproxy.service.proxy.node.ProxyHttpxNode import ProxyHttpxNode
 from pyasyncproxy.service.proxy.ProxyNode import ProxyNode
 from pyasyncproxy.service.proxy.ProxySimpleEngineFactory import ProxySimpleEngineFactory
 from pyasyncproxy.service.proxy.ProxySimpleService import ProxySimpleService
@@ -30,7 +29,7 @@ snowflake = Snowflake(env.worker_id, env.data_center_id)
 with env.proxy_path.open("r") as f:
     proxy_tree = ProxyRootTree.model_validate_json("".join(f.readlines()))
 node_map: Mapping[str, ProxyNode] = {
-    ProxyHttpNode.__name__: ProxyHttpNode(HttpxClient),
+    ProxyHttpxNode.__name__: ProxyHttpxNode(),
     ProxyHeaderNode.__name__: ProxyHeaderNode(env),
     ProxyErrorNode.__name__: ProxyErrorNode(),
 }
@@ -41,7 +40,7 @@ service = ProxySimpleService(proxy_engine)
 
 async def forward_request(req: Request) -> Response:
     """Forward request."""
-    url = str(req.url)
+    url = req.url.__str__()
     method = req.method
     content = await req.body()
     data = ProxyRequest(request_id=snowflake.next_id(), url=url, method=method, content=content, headers=req.headers)
