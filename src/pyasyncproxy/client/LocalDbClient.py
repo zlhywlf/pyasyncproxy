@@ -38,7 +38,7 @@ class LocalDbClient(DbClient):
 
     @override
     async def get_proxy_url(self) -> ProxyUrl | None:
-        if self._index == self._len:
+        if self._index == self._len - 1:
             self._index = -1
         self._index += 1
         return self._pool[self._index]

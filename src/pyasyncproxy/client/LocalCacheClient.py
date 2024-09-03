@@ -4,6 +4,7 @@ Copyright (c) 2023-present 善假于PC也 (zlhywlf).
 """
 
 import logging
+from collections.abc import Awaitable, Callable
 from datetime import datetime, timedelta, timezone
 from typing import Any, override
 
@@ -18,20 +19,8 @@ logger = logging.getLogger(__name__)
 
 
 class _CacheInfo(BaseModel):
-    cache_map: dict[str, Any]
     key: str
     expiry: float
-
-
-async def _background_task(cache_info: _CacheInfo) -> None:
-    async def _del_cache(cache_info: _CacheInfo) -> None:
-        await anyio.sleep(cache_info.expiry)
-        value = cache_info.cache_map.pop(cache_info.key)
-        logger.info(f"{value} has expired")
-
-    tg = anyio.create_task_group()
-    await tg.__aenter__()
-    tg.start_soon(_del_cache, cache_info)
 
 
 class LocalCacheClient(CacheClient):
@@ -55,4 +44,15 @@ class LocalCacheClient(CacheClient):
             business_id=business_id,
             create_time=datetime.now(tz=timezone(timedelta(hours=8))),
         )
-        await _background_task(_CacheInfo(cache_map=self._proxy_url_cache, key=business_id, expiry=max(expiry, 0)))
+        await self._background_task(self._del_cache, _CacheInfo(key=business_id, expiry=max(expiry, 0)))
+
+    async def _del_cache(self, cache_info: _CacheInfo) -> None:
+        await anyio.sleep(cache_info.expiry)
+        value = self._proxy_url_cache.pop(cache_info.key)
+        logger.info(f"{value} has expired")
+
+    @staticmethod
+    async def _background_task(func: Callable[[_CacheInfo], Awaitable[Any]], cache_info: _CacheInfo) -> None:
+        tg = anyio.create_task_group()
+        await tg.__aenter__()
+        tg.start_soon(func, cache_info)
