@@ -7,7 +7,7 @@ import logging
 import logging.config
 import pathlib
 
-from pydantic import Field, ValidationInfo, computed_field, field_validator
+from pydantic import Field, TypeAdapter, ValidationInfo, computed_field, field_validator
 from pydantic_settings import BaseSettings
 
 from pyasyncproxy._version import version
@@ -30,10 +30,12 @@ class ProjectEnv(BaseSettings, env_prefix="PROXY_", env_file=".env", env_file_en
     forward_method_key: str = Field(default="x-proxy-method", description="proxy method's key in the headers")
     forward_timeout: str = Field(default="x-proxy-timeout", description="proxy timeout's key in the headers")
     business_id_key: str = Field(default="x-proxy-id", description="business id's key in the headers")
+    business_expiry_key: str = Field(default="x-proxy-expiry", description="business expiry's key in the headers")
     exclude_headers: list[str] | None = Field(default=None, description="exclude keys from headers")
     proxy_path: pathlib.Path = Field(default=pathlib.Path.cwd() / "proxy.json", description="proxy config path")
     worker_id: int = Field(default=1, description="worker id")
     data_center_id: int = Field(default=1, description="data center id")
+    proxy_auth: dict[str, str] | None = Field(default=None, description="proxy auth")
 
     @computed_field
     def project_banner(self) -> str:
@@ -55,3 +57,9 @@ class ProjectEnv(BaseSettings, env_prefix="PROXY_", env_file=".env", env_file_en
             return ""
         with banner_path.open("r") as f:
             return "".join(f.readlines())
+
+    @field_validator("proxy_auth", mode="before")
+    @classmethod
+    def inject_proxy_auth(cls, v: str) -> dict[str, str]:
+        """Inject proxy auth."""
+        return TypeAdapter(dict[str, str]).validate_json(v)

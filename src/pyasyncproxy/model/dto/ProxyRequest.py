@@ -18,3 +18,4 @@ class ProxyRequest(BaseModel):
     method: str
     content: bytes
     timeout: float = 200
+    expiry: float = 120

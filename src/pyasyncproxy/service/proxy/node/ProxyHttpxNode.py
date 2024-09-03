@@ -19,21 +19,21 @@ class ProxyHttpxNode(ProxyNode):
 
     @override
     async def handle(self, ctx: ProxyContext) -> ProxyRouteChecker:
-        mounts = (
-            {
-                "http://": httpx.AsyncHTTPTransport(proxy=ctx.proxy_url),
-                "https://": httpx.AsyncHTTPTransport(proxy=ctx.proxy_url),
+        mounts = None
+        if ctx.proxy_url and ctx.env.proxy_auth:
+            auth = ctx.env.proxy_auth.get(ctx.proxy_url.category)
+            auth = f"{auth}@" if auth else ""
+            proxy_url = f"{ctx.proxy_url.protocol}://{auth}{ctx.proxy_url.ip}:{ctx.proxy_url.port}"
+            mounts = {
+                "http://": httpx.AsyncHTTPTransport(proxy=proxy_url),
+                "https://": httpx.AsyncHTTPTransport(proxy=proxy_url),
             }
-            if ctx.proxy_url
-            else None
-        )
-        async with httpx.AsyncClient(mounts=mounts) as client:
+        async with httpx.AsyncClient(mounts=mounts, timeout=httpx.Timeout(timeout=ctx.data.timeout)) as client:
             res = await client.request(
                 method=ctx.data.method,
                 url=ctx.data.url,
                 headers=ctx.data.headers,
                 content=ctx.data.content,
-                timeout=httpx.Timeout(timeout=ctx.data.timeout),
             )
         return ProxyRouteChecker(
             curr_node_name=self.__class__.__name__,

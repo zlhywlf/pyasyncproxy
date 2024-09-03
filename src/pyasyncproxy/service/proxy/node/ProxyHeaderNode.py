@@ -26,9 +26,16 @@ class ProxyHeaderNode(ProxyNode):
         if timeout and not timeout.isnumeric():
             ctx.msg = f"{timeout} must be numeric"
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
+        expiry = data.headers.get(ctx.env.business_expiry_key)
+        if expiry and not expiry.isnumeric():
+            ctx.msg = f"{expiry} must be numeric"
+            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
         data.business_id = data.headers.get(ctx.env.business_id_key)
+        data.expiry = float(expiry) if expiry else data.expiry
         data.timeout = float(timeout) if timeout else data.timeout
         data.url = url
         data.method = method
         data.headers = {k: v for k, v in data.headers.items() if k not in (ctx.env.exclude_headers or [])}
+        if not data.business_id:
+            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OVER)
         return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OK)
