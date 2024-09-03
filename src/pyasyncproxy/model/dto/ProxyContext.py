@@ -15,6 +15,7 @@ from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 class ProxyContext(BaseModel, arbitrary_types_allowed=True):
     """proxy context."""
 
+    request_id: int
     data: ProxyRequest
     env: ProjectEnv = Field(..., repr=False)
     cache_client: CacheClient = Field(..., repr=False)

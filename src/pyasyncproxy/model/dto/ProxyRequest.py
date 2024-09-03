@@ -11,7 +11,6 @@ from pydantic import BaseModel
 class ProxyRequest(BaseModel):
     """Request parameters for the route of /proxy."""
 
-    request_id: int
     business_id: str | None = None
     url: str
     headers: Mapping[str, str]

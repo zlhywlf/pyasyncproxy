@@ -7,11 +7,7 @@ import logging
 from collections.abc import Mapping
 from typing import override
 
-from pyasyncproxy.client.CacheClient import CacheClient
-from pyasyncproxy.client.DbClient import DbClient
-from pyasyncproxy.env.ProjectEnv import ProjectEnv
 from pyasyncproxy.model.dto.ProxyContext import ProxyContext
-from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
 from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
 from pyasyncproxy.model.dto.ProxyRouteInfo import ProxyRouteChecker
 from pyasyncproxy.model.dto.ProxyTree import ProxyNodeTree, ProxyRootTree
@@ -24,26 +20,15 @@ logger = logging.getLogger(__name__)
 class ProxySimpleEngine(ProxyEngine):
     """default engine."""
 
-    def __init__(
-        self,
-        proxy_tree: ProxyRootTree,
-        node_map: Mapping[str, ProxyNode],
-        env: ProjectEnv,
-        cache_client: CacheClient,
-        db_client: DbClient,
-    ) -> None:
+    def __init__(self, proxy_tree: ProxyRootTree, node_map: Mapping[str, ProxyNode]) -> None:
         """Init."""
         self._proxy_tree = proxy_tree
         self._node_map = node_map
-        self._env = env
-        self._cache_client = cache_client
-        self._db_client = db_client
 
     @override
-    async def process(self, data: ProxyRequest) -> ProxyResponse:
+    async def process(self, ctx: ProxyContext) -> ProxyResponse:
         node_name: str | None = self._proxy_tree.name
         response: ProxyResponse | None = None
-        ctx = ProxyContext(data=data, env=self._env, cache_client=self._cache_client, db_client=self._db_client)
         while node_name:
             node = self._node_map[node_name]
             checker = await node.handle(ctx)
@@ -51,7 +36,7 @@ class ProxySimpleEngine(ProxyEngine):
             logger.info(f"{ctx} {checker}")
             node_name = self._get_next_node(checker)
         if not response:
-            msg = f"process failure for {self._proxy_tree} | {data}"
+            msg = f"process failure for {self._proxy_tree} | {ctx.data}"
             raise RuntimeError(msg)
         return response
 

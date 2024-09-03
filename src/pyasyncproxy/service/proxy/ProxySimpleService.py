@@ -5,7 +5,7 @@ Copyright (c) 2023-present 善假于PC也 (zlhywlf).
 
 from typing import override
 
-from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
+from pyasyncproxy.model.dto.ProxyContext import ProxyContext
 from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
 from pyasyncproxy.service.proxy.ProxyEngine import ProxyEngine
 from pyasyncproxy.service.ProxyService import ProxyService
@@ -19,5 +19,5 @@ class ProxySimpleService(ProxyService):
         self._engine = engine
 
     @override
-    async def forward_request(self, request: ProxyRequest) -> ProxyResponse:
-        return await self._engine.process(request)
+    async def forward_request(self, ctx: ProxyContext) -> ProxyResponse:
+        return await self._engine.process(ctx)
