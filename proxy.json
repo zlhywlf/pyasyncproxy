@@ -45,7 +45,21 @@
       ]
     },
     {
-      "name": "ProxyHttpNode"
+      "name": "ProxyHttpxNode",
+      "routes": [
+        {
+          "next_node_name": "ProxyErrorNode",
+          "type": "error"
+        },
+        {
+          "next_node_name": "ProxyCacheIpNode",
+          "type": "cache"
+        },
+        {
+          "next_node_name": "ProxyRandomIpNode",
+          "type": "over"
+        }
+      ]
     },
     {
       "name": "ProxyErrorNode"

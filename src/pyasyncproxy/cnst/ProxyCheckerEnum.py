@@ -12,3 +12,4 @@ class ProxyCheckerEnum(StrEnum):
     OK = "ok"
     ERROR = "error"
     OVER = "over"
+    CACHE = "cache"

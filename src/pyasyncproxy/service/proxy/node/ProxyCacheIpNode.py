@@ -17,8 +17,9 @@ class ProxyCacheIpNode(ProxyNode):
     @override
     async def handle(self, ctx: ProxyContext) -> ProxyRouteChecker:
         business_id = ctx.data.business_id or str(ctx.request_id)
-        proxy_url = await ctx.cache_client.get_proxy_url(business_id)
+        proxy_url = await ctx.cache_client.get_proxy_url(business_id) if not ctx.first else None
         if not proxy_url:
+            ctx.first = True
             proxy_url = await ctx.db_client.get_proxy_url()
             if not proxy_url:
                 ctx.msg = "Proxy IP exhausted"

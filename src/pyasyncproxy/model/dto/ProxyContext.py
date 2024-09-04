@@ -22,3 +22,4 @@ class ProxyContext(BaseModel, arbitrary_types_allowed=True):
     db_client: DbClient = Field(..., repr=False)
     msg: str | None = None
     proxy_url: ProxyUrl | None = None
+    first: bool = False

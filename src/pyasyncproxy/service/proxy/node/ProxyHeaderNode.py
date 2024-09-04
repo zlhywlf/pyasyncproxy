@@ -24,15 +24,20 @@ class ProxyHeaderNode(ProxyNode):
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
         timeout = data.headers.get(ctx.env.forward_timeout)
         if timeout and not timeout.isnumeric():
-            ctx.msg = f"{timeout} must be numeric"
+            ctx.msg = f"{ctx.env.forward_timeout} must be numeric"
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
         expiry = data.headers.get(ctx.env.business_expiry_key)
         if expiry and not expiry.isnumeric():
-            ctx.msg = f"{expiry} must be numeric"
+            ctx.msg = f"{ctx.env.business_expiry_key} must be numeric"
+            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
+        retry = data.headers.get(ctx.env.forward_retry_key)
+        if retry and not retry.isdigit():
+            ctx.msg = f"{ctx.env.forward_retry_key} must be digit"
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
         data.business_id = data.headers.get(ctx.env.business_id_key)
         data.expiry = float(expiry) if expiry else data.expiry
         data.timeout = float(timeout) if timeout else data.timeout
+        data.retry = int(retry) if retry else data.retry
         data.url = url
         data.method = method
         data.headers = {k: v for k, v in data.headers.items() if k not in (ctx.env.exclude_headers or [])}

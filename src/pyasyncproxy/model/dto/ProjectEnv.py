@@ -36,6 +36,7 @@ class ProjectEnv(BaseSettings, env_prefix="PROXY_", env_file=".env", env_file_en
     worker_id: int = Field(default=1, description="worker id")
     data_center_id: int = Field(default=1, description="data center id")
     proxy_auth: dict[str, str] | None = Field(default=None, description="proxy auth")
+    forward_retry_key: str = Field(default="x-proxy-retry", description="proxy retry key in the headers")
 
     @computed_field
     def project_banner(self) -> str:

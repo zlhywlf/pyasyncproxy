@@ -19,6 +19,9 @@ class ProxyHttpxNode(ProxyNode):
 
     @override
     async def handle(self, ctx: ProxyContext) -> ProxyRouteChecker:
+        if ctx.data.retry <= 0:
+            ctx.msg = "Attempted multiple times but still failed"
+            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
         mounts = None
         if ctx.proxy_url and ctx.env.proxy_auth:
             auth = ctx.env.proxy_auth.get(ctx.proxy_url.category)
@@ -28,12 +31,23 @@ class ProxyHttpxNode(ProxyNode):
                 "http://": httpx.AsyncHTTPTransport(proxy=proxy_url),
                 "https://": httpx.AsyncHTTPTransport(proxy=proxy_url),
             }
-        async with httpx.AsyncClient(mounts=mounts, timeout=httpx.Timeout(timeout=ctx.data.timeout)) as client:
-            res = await client.request(
-                method=ctx.data.method,
-                url=ctx.data.url,
-                headers=ctx.data.headers,
-                content=ctx.data.content,
+        try:
+            async with httpx.AsyncClient(mounts=mounts, timeout=httpx.Timeout(timeout=ctx.data.timeout)) as client:
+                res = await client.request(
+                    method=ctx.data.method,
+                    url=ctx.data.url,
+                    headers=ctx.data.headers,
+                    content=ctx.data.content,
+                )
+        except httpx.ConnectTimeout:
+            ctx.msg = "ConnectTimeout"
+            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
+        except httpx.ConnectError:
+            ctx.data.retry -= 1
+            return (
+                ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.CACHE)
+                if ctx.data.business_id
+                else ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OVER)
             )
         return ProxyRouteChecker(
             curr_node_name=self.__class__.__name__,
