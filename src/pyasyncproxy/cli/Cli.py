@@ -9,8 +9,8 @@ from argparse import ArgumentParser
 from pydantic_settings import CliSettingsSource
 
 from pyasyncproxy._version import version
-from pyasyncproxy.env.ProjectEnv import ProjectEnv
 from pyasyncproxy.model.cmd.CmdRoot import CmdRoot
+from pyasyncproxy.model.dto.ProjectEnv import ProjectEnv
 
 
 class Cli(CmdRoot):

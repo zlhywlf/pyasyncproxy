@@ -13,7 +13,7 @@ from starlette.routing import Route
 from pyasyncproxy.client.LocalCacheClient import LocalCacheClient
 from pyasyncproxy.client.LocalDbClient import LocalDbClient
 from pyasyncproxy.common.Snowflake import Snowflake
-from pyasyncproxy.env.ProjectEnv import ProjectEnv
+from pyasyncproxy.model.dto.ProjectEnv import ProjectEnv
 from pyasyncproxy.model.dto.ProxyContext import ProxyContext
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
 from pyasyncproxy.model.dto.ProxyTree import ProxyRootTree

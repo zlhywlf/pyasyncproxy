@@ -18,7 +18,7 @@ from pydantic_core import CoreConfig
 from pyasyncproxy.__main__ import main
 from pyasyncproxy._version import version
 from pyasyncproxy.cli.ProcessManager import ProcessManager
-from pyasyncproxy.env.ProjectEnv import ProjectEnv
+from pyasyncproxy.model.dto.ProjectEnv import ProjectEnv
 
 
 @pytest.mark.parametrize("arg", ["-V", "--version"])

@@ -3,7 +3,6 @@
 Copyright (c) 2023-present 善假于PC也 (zlhywlf).
 """
 
-import logging
 import logging.config
 import platform
 import queue
@@ -13,7 +12,7 @@ from typing import ClassVar
 
 import psutil
 
-from pyasyncproxy.env.ProjectEnv import ProjectEnv
+from pyasyncproxy.model.dto.ProjectEnv import ProjectEnv
 
 logger = logging.getLogger(__name__)
 

@@ -8,7 +8,7 @@ import logging.config
 
 from pyasyncproxy.cli.Cli import Cli
 from pyasyncproxy.cli.ProcessManager import ProcessManager
-from pyasyncproxy.env.ProjectEnv import ProjectEnv
+from pyasyncproxy.model.dto.ProjectEnv import ProjectEnv
 
 
 def main() -> None:

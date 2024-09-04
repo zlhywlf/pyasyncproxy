@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from pyasyncproxy.client.CacheClient import CacheClient
 from pyasyncproxy.client.DbClient import DbClient
-from pyasyncproxy.env.ProjectEnv import ProjectEnv
+from pyasyncproxy.model.dto.ProjectEnv import ProjectEnv
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
 from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 
