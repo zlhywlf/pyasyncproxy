@@ -10,7 +10,7 @@ from typing import override
 from pyasyncproxy.model.dto.ProxyContext import ProxyContext
 from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
 from pyasyncproxy.model.dto.ProxyRouteInfo import ProxyRouteChecker
-from pyasyncproxy.model.dto.ProxyTree import ProxyNodeTree, ProxyRootTree
+from pyasyncproxy.model.dto.ProxyTree import ProxyRootTree
 from pyasyncproxy.service.proxy.ProxyEngine import ProxyEngine
 from pyasyncproxy.service.proxy.ProxyNode import ProxyNode
 
@@ -33,27 +33,21 @@ class ProxySimpleEngine(ProxyEngine):
             node = self._node_map[node_name]
             checker = await node.handle(ctx)
             response = checker.response
-            node_name = self._get_next_node(checker)
-            logger.info(f"{ctx} {checker} next_node_name={node_name}")
+            self._decide(checker)
+            node_name = checker.next_node_name
+            logger.info(f"{ctx} {checker}")
         if not response:
             msg = f"process failure for {self._proxy_tree} | {ctx.data}"
             raise RuntimeError(msg)
         return response
 
-    def _get_next_node(self, checker: ProxyRouteChecker) -> str | None:
+    def _decide(self, checker: ProxyRouteChecker) -> None:
         if not self._proxy_tree.nodes:
-            return None
+            return
         for node in self._proxy_tree.nodes:
-            if self._decide(node, checker):
-                return node.next_name
-        return None
-
-    @staticmethod
-    def _decide(node: ProxyNodeTree, checker: ProxyRouteChecker) -> bool:
-        if node.name != checker.curr_node_name or not node.routes:
-            return False
-        for route in node.routes:
-            if route.type == checker.type:
-                node.next_name = route.next_node_name
-                return True
-        return False
+            if node.name != checker.curr_node_name or not node.routes:
+                continue
+            for route in node.routes:
+                if route.type == checker.type:
+                    checker.next_node_name = route.next_node_name
+                    return

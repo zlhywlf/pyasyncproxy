@@ -12,7 +12,6 @@ class ProxyNodeTree(BaseModel):
     """sub node."""
 
     name: str
-    next_name: str | None = None
     routes: list[ProxyRouteInfo] | None = None
 
 

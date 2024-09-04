@@ -18,10 +18,10 @@ class ProxyRouteType(BaseModel):
 class ProxyRouteInfo(ProxyRouteType):
     """route info."""
 
-    next_node_name: str
+    next_node_name: str | None = None
 
 
-class ProxyRouteChecker(ProxyRouteType):
+class ProxyRouteChecker(ProxyRouteInfo):
     """route type checker."""
 
     curr_node_name: str

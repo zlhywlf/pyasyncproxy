@@ -39,8 +39,8 @@ class ProxyHttpxNode(ProxyNode):
                     headers=ctx.data.headers,
                     content=ctx.data.content,
                 )
-        except httpx.ConnectTimeout:
-            ctx.msg = "ConnectTimeout"
+        except (httpx.ConnectTimeout, httpx.ReadTimeout):
+            ctx.msg = "timeout"
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
         except httpx.ConnectError:
             ctx.data.retry -= 1
