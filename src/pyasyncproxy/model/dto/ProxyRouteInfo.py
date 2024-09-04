@@ -9,15 +9,10 @@ from pyasyncproxy.cnst.ProxyCheckerEnum import ProxyCheckerEnum
 from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
 
 
-class ProxyRouteType(BaseModel):
-    """route type."""
-
-    type: ProxyCheckerEnum
-
-
-class ProxyRouteInfo(ProxyRouteType):
+class ProxyRouteInfo(BaseModel):
     """route info."""
 
+    type: ProxyCheckerEnum
     next_node_name: str | None = None
 
 
