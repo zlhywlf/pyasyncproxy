@@ -5,11 +5,11 @@
       "name": "ProxyHeaderNode",
       "routes": [
         {
-          "next_node_name": "ProxyHttpxNode",
+          "next_node_name": "ProxyRandomIpNode",
           "type": "over"
         },
         {
-          "next_node_name": "ProxyIpNode",
+          "next_node_name": "ProxyCacheIpNode",
           "type": "ok"
         },
         {
@@ -19,7 +19,20 @@
       ]
     },
     {
-      "name": "ProxyIpNode",
+      "name": "ProxyCacheIpNode",
+      "routes": [
+        {
+          "next_node_name": "ProxyHttpxNode",
+          "type": "ok"
+        },
+        {
+          "next_node_name": "ProxyErrorNode",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "name": "ProxyRandomIpNode",
       "routes": [
         {
           "next_node_name": "ProxyHttpxNode",

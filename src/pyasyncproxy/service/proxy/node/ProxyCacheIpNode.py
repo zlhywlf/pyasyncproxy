@@ -11,14 +11,12 @@ from pyasyncproxy.model.dto.ProxyRouteInfo import ProxyRouteChecker
 from pyasyncproxy.service.proxy.ProxyNode import ProxyNode
 
 
-class ProxyIpNode(ProxyNode):
-    """handle proxy ip."""
+class ProxyCacheIpNode(ProxyNode):
+    """Retrieve IP from cache."""
 
     @override
     async def handle(self, ctx: ProxyContext) -> ProxyRouteChecker:
-        business_id = ctx.data.business_id
-        if not business_id:
-            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OK)
+        business_id = ctx.data.business_id or str(ctx.request_id)
         proxy_url = await ctx.cache_client.get_proxy_url(business_id)
         if not proxy_url:
             proxy_url = await ctx.db_client.get_proxy_url()
