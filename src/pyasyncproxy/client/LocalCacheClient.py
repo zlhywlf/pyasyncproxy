@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 class _CacheInfo(BaseModel):
     key: str
     expiry: float
+    create_time: datetime
 
 
 class LocalCacheClient(CacheClient):
@@ -38,18 +39,27 @@ class LocalCacheClient(CacheClient):
 
     @override
     async def set_proxy_url(self, business_id: str, proxy_url: ProxyUrl, expiry: float) -> None:
+        now = datetime.now(tz=timezone(timedelta(hours=8)))
         self._proxy_url_cache[business_id] = ProxyUrlCache(
             url=proxy_url,
             expiry=expiry,
             business_id=business_id,
-            create_time=datetime.now(tz=timezone(timedelta(hours=8))),
+            create_time=now,
         )
-        await self._background_task(self._del_cache, _CacheInfo(key=business_id, expiry=max(expiry, 0)))
+        await self._background_task(
+            self._del_cache, _CacheInfo(key=business_id, expiry=max(expiry, 0), create_time=now)
+        )
+
+    @override
+    async def is_exist_proxy_url(self, business_id: str) -> bool:
+        return business_id in self._proxy_url_cache
 
     async def _del_cache(self, cache_info: _CacheInfo) -> None:
         await anyio.sleep(cache_info.expiry)
-        value = self._proxy_url_cache.pop(cache_info.key)
-        logger.info(f"{value} has expired")
+        url = self._proxy_url_cache[cache_info.key]
+        if url.create_time == cache_info.create_time:
+            self._proxy_url_cache.pop(cache_info.key)
+            logger.info(f"{url} has expired")
 
     @staticmethod
     async def _background_task(func: Callable[[_CacheInfo], Awaitable[Any]], cache_info: _CacheInfo) -> None:

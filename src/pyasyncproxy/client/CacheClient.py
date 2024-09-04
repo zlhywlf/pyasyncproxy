@@ -18,3 +18,7 @@ class CacheClient(ABC):
     @abstractmethod
     async def set_proxy_url(self, business_id: str, proxy_url: ProxyUrl, expiry: float) -> None:
         """Set proxy url."""
+
+    @abstractmethod
+    async def is_exist_proxy_url(self, business_id: str) -> bool:
+        """Is exist proxy url."""

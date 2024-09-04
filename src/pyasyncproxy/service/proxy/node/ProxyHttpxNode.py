@@ -44,11 +44,7 @@ class ProxyHttpxNode(ProxyNode):
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
         except httpx.ConnectError:
             ctx.data.retry -= 1
-            return (
-                ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.CACHE)
-                if ctx.data.business_id
-                else ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OVER)
-            )
+            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OVER)
         return ProxyRouteChecker(
             curr_node_name=self.__class__.__name__,
             type=ProxyCheckerEnum.OK,

@@ -41,6 +41,7 @@ class ProxyHeaderNode(ProxyNode):
         data.url = url
         data.method = method
         data.headers = {k: v for k, v in data.headers.items() if k not in (ctx.env.exclude_headers or [])}
-        if not data.business_id:
-            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OVER)
-        return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OK)
+        ctx.first = not await ctx.cache_client.is_exist_proxy_url(data.business_id) if data.business_id else True
+        if ctx.first:
+            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OK)
+        return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.CACHE)

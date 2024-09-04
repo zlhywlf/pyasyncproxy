@@ -5,12 +5,25 @@
       "name": "ProxyHeaderNode",
       "routes": [
         {
-          "next_node_name": "ProxyRandomIpNode",
-          "type": "over"
+          "next_node_name": "ProxyGetIpNode",
+          "type": "ok"
         },
         {
           "next_node_name": "ProxyCacheIpNode",
-          "type": "ok"
+          "type": "cache"
+        },
+        {
+          "next_node_name": "ProxyErrorNode",
+          "type": "error"
+        }
+      ]
+    },
+    {
+      "name": "ProxyGetIpNode",
+      "routes": [
+        {
+          "next_node_name": "ProxyCacheIpNode",
+          "type": "cache"
         },
         {
           "next_node_name": "ProxyErrorNode",
@@ -32,19 +45,6 @@
       ]
     },
     {
-      "name": "ProxyRandomIpNode",
-      "routes": [
-        {
-          "next_node_name": "ProxyHttpxNode",
-          "type": "ok"
-        },
-        {
-          "next_node_name": "ProxyErrorNode",
-          "type": "error"
-        }
-      ]
-    },
-    {
       "name": "ProxyHttpxNode",
       "routes": [
         {
@@ -52,11 +52,7 @@
           "type": "error"
         },
         {
-          "next_node_name": "ProxyCacheIpNode",
-          "type": "cache"
-        },
-        {
-          "next_node_name": "ProxyRandomIpNode",
+          "next_node_name": "ProxyGetIpNode",
           "type": "over"
         }
       ]
