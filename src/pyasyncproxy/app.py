@@ -10,8 +10,8 @@ from starlette.requests import Request
 from starlette.responses import Response
 from starlette.routing import Route
 
-from pyasyncproxy.client.LocalCacheClient import LocalCacheClient
-from pyasyncproxy.client.LocalDbClient import LocalDbClient
+from pyasyncproxy.client.CacheLocalClient import CacheLocalClient
+from pyasyncproxy.client.DbLocalClient import DbLocalClient
 from pyasyncproxy.common.Snowflake import Snowflake
 from pyasyncproxy.model.dto.ProjectEnv import ProjectEnv
 from pyasyncproxy.model.dto.ProxyContext import ProxyContext
@@ -29,8 +29,8 @@ with env.proxy_path.open("r") as f:
     proxy_tree = ProxyRootTree.model_validate_json("".join(f.readlines()))
 nodes_map = ProxySimpleNodeFactory().collect_nodes()
 proxy_engine_factory = ProxySimpleEngineFactory(nodes_map)
-cache_client = LocalCacheClient()
-db_client = LocalDbClient()
+cache_client = CacheLocalClient()
+db_client = DbLocalClient()
 proxy_engine = proxy_engine_factory.create_engine(proxy_tree)
 service = ProxySimpleService(proxy_engine)
 

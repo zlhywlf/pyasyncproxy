@@ -24,7 +24,7 @@ class _CacheInfo(BaseModel):
     create_time: datetime
 
 
-class LocalCacheClient(CacheClient):
+class CacheLocalClient(CacheClient):
     """Local cache client."""
 
     def __init__(self) -> None:

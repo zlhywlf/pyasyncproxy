@@ -15,7 +15,7 @@ from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 logger = logging.getLogger(__name__)
 
 
-class LocalDbClient(DbClient):
+class DbLocalClient(DbClient):
     """local database client."""
 
     def __init__(self) -> None:
