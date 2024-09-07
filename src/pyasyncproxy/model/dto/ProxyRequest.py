@@ -16,6 +16,6 @@ class ProxyRequest(BaseModel):
     headers: Mapping[str, str]
     method: str
     content: bytes
-    timeout: float = 200
-    expiry: float = 120
+    timeout: float = 60 * 2
+    expiry: float = 60 * 30
     retry: int = 3

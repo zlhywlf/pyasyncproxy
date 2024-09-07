@@ -11,8 +11,8 @@ from pyasyncproxy.model.dto.ProxyRouteInfo import ProxyRouteChecker
 from pyasyncproxy.service.proxy.ProxyNode import ProxyNode
 
 
-class ProxyGetIpNode(ProxyNode):
-    """get IP from the pool."""
+class ProxyStaticIpNode(ProxyNode):
+    """get static IP from the pool."""
 
     @override
     async def handle(self, ctx: ProxyContext) -> ProxyRouteChecker:

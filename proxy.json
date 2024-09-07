@@ -5,7 +5,7 @@
       "name": "ProxyHeaderNode",
       "routes": [
         {
-          "next_node_name": "ProxyGetIpNode",
+          "next_node_name": "ProxyStaticIpNode",
           "type": "ok"
         },
         {
@@ -19,7 +19,7 @@
       ]
     },
     {
-      "name": "ProxyGetIpNode",
+      "name": "ProxyStaticIpNode",
       "routes": [
         {
           "next_node_name": "ProxyCacheIpNode",
@@ -52,7 +52,7 @@
           "type": "error"
         },
         {
-          "next_node_name": "ProxyGetIpNode",
+          "next_node_name": "ProxyStaticIpNode",
           "type": "over"
         }
       ]

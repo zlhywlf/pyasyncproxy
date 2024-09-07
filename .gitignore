@@ -11,5 +11,5 @@ __pycache__
 htmlcov
 src/pyasyncproxy/_version.py
 .env
-*.log
+*.log*
 *.csv
