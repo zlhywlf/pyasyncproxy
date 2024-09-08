@@ -20,7 +20,6 @@ class ProxyStaticIpNode(ProxyNode):
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.CACHE)
         proxy_url = await ctx.db_client.get_proxy_url()
         if not proxy_url:
-            ctx.msg = "Proxy IP exhausted"
-            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
+            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OVER)
         ctx.proxy_url = proxy_url
         return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.CACHE)
