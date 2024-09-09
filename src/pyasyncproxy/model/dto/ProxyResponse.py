@@ -13,5 +13,5 @@ class ProxyResponse(BaseModel):
 
     code: int
     headers: Mapping[str, str] | None = None
-    media_type: str
+    media_type: str | None
     content: bytes
