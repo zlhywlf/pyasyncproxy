@@ -11,7 +11,7 @@ from pyasyncproxy.model.dto.ProxyRouteInfo import ProxyRouteChecker
 from pyasyncproxy.service.proxy.ProxyNode import ProxyNode
 
 
-class ProxyCacheIpNode(ProxyNode):
+class ProxyIpCacheNode(ProxyNode):
     """get IP from the cache and save IP to the cache."""
 
     @override

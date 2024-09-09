@@ -9,7 +9,7 @@
           "type": "ok"
         },
         {
-          "next_node_name": "ProxyCacheIpNode",
+          "next_node_name": "ProxyIpCacheNode",
           "type": "cache"
         },
         {
@@ -22,7 +22,7 @@
       "name": "ProxyIpPoolNode",
       "routes": [
         {
-          "next_node_name": "ProxyCacheIpNode",
+          "next_node_name": "ProxyIpCacheNode",
           "type": "cache"
         },
         {
@@ -32,7 +32,7 @@
       ]
     },
     {
-      "name": "ProxyCacheIpNode",
+      "name": "ProxyIpCacheNode",
       "routes": [
         {
           "next_node_name": "ProxyHttpxNode",
