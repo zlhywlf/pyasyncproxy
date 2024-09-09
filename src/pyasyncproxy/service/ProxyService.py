@@ -7,6 +7,7 @@ from abc import ABC, abstractmethod
 
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
 from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
+from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 
 
 class ProxyService(ABC):
@@ -15,3 +16,7 @@ class ProxyService(ABC):
     @abstractmethod
     async def forward_request(self, request: ProxyRequest) -> ProxyResponse:
         """Forward request."""
+
+    @abstractmethod
+    async def get_proxy_pool(self) -> list[ProxyUrl]:
+        """Get all proxy url from pool."""

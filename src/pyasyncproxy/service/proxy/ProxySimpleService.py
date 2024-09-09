@@ -9,6 +9,7 @@ from pyasyncproxy.model.dto.ProxyAppContext import ProxyAppContext
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
 from pyasyncproxy.model.dto.ProxyRequestContext import ProxyRequestContext
 from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
+from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 from pyasyncproxy.service.proxy.ProxyEngine import ProxyEngine
 from pyasyncproxy.service.ProxyService import ProxyService
 
@@ -26,3 +27,7 @@ class ProxySimpleService(ProxyService):
         request_id = self._app_ctx.snowflake.next_id()
         ctx = ProxyRequestContext(request_id=request_id, data=request, app=self._app_ctx)
         return await self._engine.process(ctx)
+
+    @override
+    async def get_proxy_pool(self) -> list[ProxyUrl]:
+        return await self._app_ctx.ip_pool.get_proxy_pool()

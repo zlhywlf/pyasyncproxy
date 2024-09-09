@@ -48,3 +48,7 @@ class ProxyIpPoolLocal(ProxyIpPool):
     async def add_proxy_url(self, proxy_url: ProxyUrl) -> None:
         self._pool.append(proxy_url)
         logger.info(proxy_url)
+
+    @override
+    async def get_proxy_pool(self) -> list[ProxyUrl]:
+        return self._pool
