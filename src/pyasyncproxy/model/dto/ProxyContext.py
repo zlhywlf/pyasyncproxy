@@ -5,8 +5,8 @@ Copyright (c) 2023-present 善假于PC也 (zlhywlf).
 
 from pydantic import BaseModel, Field
 
-from pyasyncproxy.client.ProxyIpCache import ProxyIpCache
-from pyasyncproxy.client.ProxyIpPool import ProxyIpPool
+from pyasyncproxy.context.ProxyIpCache import ProxyIpCache
+from pyasyncproxy.context.ProxyIpPool import ProxyIpPool
 from pyasyncproxy.model.dto.ProjectEnv import ProjectEnv
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
 from pyasyncproxy.model.po.ProxyUrl import ProxyUrl

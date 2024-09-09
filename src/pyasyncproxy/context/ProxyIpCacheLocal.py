@@ -11,7 +11,7 @@ from typing import Any, override
 import anyio
 from pydantic import BaseModel
 
-from pyasyncproxy.client.ProxyIpCache import ProxyIpCache
+from pyasyncproxy.context.ProxyIpCache import ProxyIpCache
 from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 from pyasyncproxy.model.po.ProxyUrlCache import ProxyUrlCache
 

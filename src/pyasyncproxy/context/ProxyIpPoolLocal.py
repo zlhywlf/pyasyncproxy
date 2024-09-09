@@ -7,7 +7,7 @@ import logging
 import pathlib
 from typing import override
 
-from pyasyncproxy.client.ProxyIpPool import ProxyIpPool
+from pyasyncproxy.context.ProxyIpPool import ProxyIpPool
 from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 
 logger = logging.getLogger(__name__)

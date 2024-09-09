@@ -10,9 +10,9 @@ from starlette.requests import Request
 from starlette.responses import Response
 from starlette.routing import Route
 
-from pyasyncproxy.client.ProxyIpCacheLocal import ProxyIpCacheLocal
-from pyasyncproxy.client.ProxyIpPoolLocal import ProxyIpPoolLocal
 from pyasyncproxy.common.Snowflake import Snowflake
+from pyasyncproxy.context.ProxyIpCacheLocal import ProxyIpCacheLocal
+from pyasyncproxy.context.ProxyIpPoolLocal import ProxyIpPoolLocal
 from pyasyncproxy.model.dto.ProjectEnv import ProjectEnv
 from pyasyncproxy.model.dto.ProxyContext import ProxyContext
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
