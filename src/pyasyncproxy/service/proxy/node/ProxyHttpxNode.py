@@ -8,7 +8,7 @@ from typing import override
 import httpx
 
 from pyasyncproxy.cnst.ProxyCheckerEnum import ProxyCheckerEnum
-from pyasyncproxy.model.dto.ProxyContext import ProxyContext
+from pyasyncproxy.model.dto.ProxyRequestContext import ProxyRequestContext
 from pyasyncproxy.model.dto.ProxyResponse import ProxyResponse
 from pyasyncproxy.model.dto.ProxyRouteInfo import ProxyRouteChecker
 from pyasyncproxy.service.proxy.ProxyNode import ProxyNode
@@ -18,13 +18,13 @@ class ProxyHttpxNode(ProxyNode):
     """Request target service."""
 
     @override
-    async def handle(self, ctx: ProxyContext) -> ProxyRouteChecker:
+    async def handle(self, ctx: ProxyRequestContext) -> ProxyRouteChecker:
         if ctx.data.retry <= 0:
             ctx.msg = "Attempted multiple times but still failed"
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
         mounts = None
-        if ctx.proxy_url and ctx.env.proxy_auth:
-            auth = ctx.env.proxy_auth.get(ctx.proxy_url.category)
+        if ctx.proxy_url and ctx.app.env.proxy_auth:
+            auth = ctx.app.env.proxy_auth.get(ctx.proxy_url.category)
             auth = f"{auth}@" if auth else ""
             proxy_url = f"{ctx.proxy_url.protocol}://{auth}{ctx.proxy_url.ip}:{ctx.proxy_url.port}"
             mounts = {

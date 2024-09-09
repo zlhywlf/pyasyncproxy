@@ -14,8 +14,7 @@ from pyasyncproxy.common.Snowflake import Snowflake
 from pyasyncproxy.context.ProxyIpCacheLocal import ProxyIpCacheLocal
 from pyasyncproxy.context.ProxyIpPoolLocal import ProxyIpPoolLocal
 from pyasyncproxy.model.dto.ProjectEnv import ProjectEnv
-from pyasyncproxy.model.dto.ProxyContext import ProxyContext
-from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
+from pyasyncproxy.model.dto.ProxyAppContext import ProxyAppContext
 from pyasyncproxy.model.dto.ProxyTree import ProxyRootTree
 from pyasyncproxy.service.proxy.ProxySimpleEngineFactory import ProxySimpleEngineFactory
 from pyasyncproxy.service.proxy.ProxySimpleNodeFactory import ProxySimpleNodeFactory
@@ -32,18 +31,13 @@ proxy_engine_factory = ProxySimpleEngineFactory(nodes_map)
 ip_cache = ProxyIpCacheLocal()
 ip_pool = ProxyIpPoolLocal()
 proxy_engine = proxy_engine_factory.create_engine(proxy_tree)
-service = ProxySimpleService(proxy_engine)
+app_ctx = ProxyAppContext(env=env, ip_cache=ip_cache, ip_pool=ip_pool, snowflake=snowflake)
+service = ProxySimpleService(app_ctx, proxy_engine)
 
 
 async def forward_request(req: Request) -> Response:
     """Forward request."""
-    url = req.url.__str__()
-    method = req.method
-    content = await req.body()
-    request_id = snowflake.next_id()
-    data = ProxyRequest(url=url, method=method, content=content, headers=req.headers)
-    ctx = ProxyContext(request_id=request_id, data=data, env=env, ip_cache=ip_cache, ip_pool=ip_pool)
-    res = await service.forward_request(ctx)
+    res = await service.forward_request(req.url.__str__(), req.method, await req.body(), req.headers)
     return Response(content=res.content, status_code=res.code, headers=res.headers, media_type=res.media_type)
 
 
