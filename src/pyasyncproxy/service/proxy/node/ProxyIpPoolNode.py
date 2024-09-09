@@ -11,15 +11,16 @@ from pyasyncproxy.model.dto.ProxyRouteInfo import ProxyRouteChecker
 from pyasyncproxy.service.proxy.ProxyNode import ProxyNode
 
 
-class ProxyStaticIpNode(ProxyNode):
+class ProxyIpPoolNode(ProxyNode):
     """get static IP from the pool."""
 
     @override
     async def handle(self, ctx: ProxyContext) -> ProxyRouteChecker:
         if not ctx.first:
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.CACHE)
-        proxy_url = await ctx.static_ip_pool.get_proxy_url()
+        proxy_url = await ctx.ip_pool.get_proxy_url()
         if not proxy_url:
-            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OVER)
+            ctx.msg = "Proxy IP exhausted"
+            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
         ctx.proxy_url = proxy_url
         return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.CACHE)

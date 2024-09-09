@@ -8,8 +8,8 @@ from abc import ABC, abstractmethod
 from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 
 
-class StaticIpPool(ABC):
-    """static ip pool."""
+class ProxyIpPool(ABC):
+    """proxy ip pool."""
 
     @abstractmethod
     async def get_proxy_url(self) -> ProxyUrl | None:

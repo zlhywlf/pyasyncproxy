@@ -7,14 +7,14 @@ import logging
 import pathlib
 from typing import override
 
-from pyasyncproxy.client.StaticIpPool import StaticIpPool
+from pyasyncproxy.client.ProxyIpPool import ProxyIpPool
 from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 
 logger = logging.getLogger(__name__)
 
 
-class StaticIpLocalPool(StaticIpPool):
-    """local static ip pool."""
+class ProxyIpLocalPool(ProxyIpPool):
+    """local proxy ip pool."""
 
     def __init__(self) -> None:
         """Init."""

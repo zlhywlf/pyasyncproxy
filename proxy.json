@@ -5,7 +5,7 @@
       "name": "ProxyHeaderNode",
       "routes": [
         {
-          "next_node_name": "ProxyStaticIpNode",
+          "next_node_name": "ProxyIpPoolNode",
           "type": "ok"
         },
         {
@@ -19,21 +19,12 @@
       ]
     },
     {
-      "name": "ProxyStaticIpNode",
+      "name": "ProxyIpPoolNode",
       "routes": [
         {
           "next_node_name": "ProxyCacheIpNode",
           "type": "cache"
         },
-        {
-          "next_node_name": "ProxyDynamicIpNode",
-          "type": "over"
-        }
-      ]
-    },
-    {
-      "name": "ProxyDynamicIpNode",
-      "routes": [
         {
           "next_node_name": "ProxyErrorNode",
           "type": "error"
@@ -61,7 +52,7 @@
           "type": "error"
         },
         {
-          "next_node_name": "ProxyStaticIpNode",
+          "next_node_name": "ProxyIpPoolNode",
           "type": "over"
         }
       ]
