@@ -8,8 +8,8 @@ from abc import ABC, abstractmethod
 from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 
 
-class CacheClient(ABC):
-    """cache client."""
+class ProxyIpCache(ABC):
+    """proxy ip cache."""
 
     @abstractmethod
     async def get_proxy_url(self, business_id: str) -> ProxyUrl | None:

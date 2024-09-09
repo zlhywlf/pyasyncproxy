@@ -18,10 +18,10 @@ class ProxyIpCacheNode(ProxyNode):
     async def handle(self, ctx: ProxyContext) -> ProxyRouteChecker:
         business_id = ctx.data.business_id or str(ctx.request_id)
         if not ctx.proxy_url:
-            proxy_url = await ctx.cache_client.get_proxy_url(business_id)
+            proxy_url = await ctx.ip_cache.get_proxy_url(business_id)
             if not proxy_url:
                 ctx.msg = f"{business_id}: Proxy not found in the cache"
                 return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
             ctx.proxy_url = proxy_url
-        await ctx.cache_client.set_proxy_url(business_id, ctx.proxy_url, ctx.data.expiry)
+        await ctx.ip_cache.set_proxy_url(business_id, ctx.proxy_url, ctx.data.expiry)
         return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OK)

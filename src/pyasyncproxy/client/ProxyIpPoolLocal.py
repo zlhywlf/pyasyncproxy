@@ -13,7 +13,7 @@ from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 logger = logging.getLogger(__name__)
 
 
-class ProxyIpLocalPool(ProxyIpPool):
+class ProxyIpPoolLocal(ProxyIpPool):
     """local proxy ip pool."""
 
     def __init__(self) -> None:

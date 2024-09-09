@@ -11,7 +11,7 @@ from typing import Any, override
 import anyio
 from pydantic import BaseModel
 
-from pyasyncproxy.client.CacheClient import CacheClient
+from pyasyncproxy.client.ProxyIpCache import ProxyIpCache
 from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 from pyasyncproxy.model.po.ProxyUrlCache import ProxyUrlCache
 
@@ -24,8 +24,8 @@ class _CacheInfo(BaseModel):
     create_time: datetime
 
 
-class CacheLocalClient(CacheClient):
-    """Local cache client."""
+class ProxyIpCacheLocal(ProxyIpCache):
+    """local proxy ip cache."""
 
     def __init__(self) -> None:
         """Init."""
