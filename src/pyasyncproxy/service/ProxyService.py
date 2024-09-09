@@ -20,3 +20,7 @@ class ProxyService(ABC):
     @abstractmethod
     async def get_proxy_pool(self) -> list[ProxyUrl]:
         """Get all proxy url from pool."""
+
+    @abstractmethod
+    async def add_proxy_url(self, url: ProxyUrl) -> None:
+        """Add proxy url."""

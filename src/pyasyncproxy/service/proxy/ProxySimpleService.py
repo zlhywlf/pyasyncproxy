@@ -31,3 +31,7 @@ class ProxySimpleService(ProxyService):
     @override
     async def get_proxy_pool(self) -> list[ProxyUrl]:
         return await self._app_ctx.ip_pool.get_proxy_pool()
+
+    @override
+    async def add_proxy_url(self, url: ProxyUrl) -> None:
+        await self._app_ctx.ip_pool.add_proxy_url(url)

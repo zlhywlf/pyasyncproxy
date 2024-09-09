@@ -10,6 +10,7 @@ from starlette.routing import Route
 
 from pyasyncproxy.bake.proxy import env, service
 from pyasyncproxy.model.dto.ProxyRequest import ProxyRequest
+from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 
 
 async def forward_request(req: Request) -> Response:
@@ -25,8 +26,15 @@ async def get_proxy_pool(req: Request) -> Response:  # noqa: ARG001
     return JSONResponse(content=[_.model_dump() for _ in pool])
 
 
+async def add_proxy_url(req: Request) -> Response:
+    """Add proxy url."""
+    await service.add_proxy_url(ProxyUrl.model_validate_json(await req.body()))
+    return Response(content="ok")
+
+
 routes = [
     Route("/proxy", endpoint=forward_request, methods=["POST"]),
-    Route("/proxy/info", endpoint=get_proxy_pool),
+    Route("/proxy/info", endpoint=get_proxy_pool, methods=["POST"]),
+    Route("/proxy/add", endpoint=add_proxy_url, methods=["POST"]),
 ]
 app = Starlette(debug=env.debug, routes=routes)
