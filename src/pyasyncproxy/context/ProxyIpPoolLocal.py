@@ -21,6 +21,9 @@ class ProxyIpPoolLocal(ProxyIpPool):
         self._index = 0
         self._pool: list[ProxyUrl] = []
         data_path = pathlib.Path.cwd() / "ip.csv"
+        if not data_path.exists():
+            logger.warning(f"{data_path} not found")
+            return
         with data_path.open("r") as f:
             for line in f.readlines():
                 row = line.split(",")
