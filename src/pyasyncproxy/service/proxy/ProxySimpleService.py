@@ -3,7 +3,6 @@
 Copyright (c) 2023-present 善假于PC也 (zlhywlf).
 """
 
-from collections.abc import Mapping
 from typing import override
 
 from pyasyncproxy.model.dto.ProxyAppContext import ProxyAppContext
@@ -23,8 +22,7 @@ class ProxySimpleService(ProxyService):
         self._app_ctx = app_ctx
 
     @override
-    async def forward_request(self, url: str, method: str, content: bytes, headers: Mapping[str, str]) -> ProxyResponse:
+    async def forward_request(self, request: ProxyRequest) -> ProxyResponse:
         request_id = self._app_ctx.snowflake.next_id()
-        data = ProxyRequest(url=url, method=method, content=content, headers=headers)
-        ctx = ProxyRequestContext(request_id=request_id, data=data, app=self._app_ctx)
+        ctx = ProxyRequestContext(request_id=request_id, data=request, app=self._app_ctx)
         return await self._engine.process(ctx)
