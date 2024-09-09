@@ -9,7 +9,7 @@ from pydantic import BaseModel
 
 
 class ProxyResponse(BaseModel):
-    """Response for the route of /proxy."""
+    """Response for the route of proxy."""
 
     code: int
     headers: Mapping[str, str] | None = None

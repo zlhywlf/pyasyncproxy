@@ -11,7 +11,7 @@ from starlette.responses import Response
 from starlette.routing import Route
 
 from pyasyncproxy.client.CacheLocalClient import CacheLocalClient
-from pyasyncproxy.client.DbLocalClient import DbLocalClient
+from pyasyncproxy.client.DynamicIpLocalPool import DynamicIpLocalPool
 from pyasyncproxy.common.Snowflake import Snowflake
 from pyasyncproxy.model.dto.ProjectEnv import ProjectEnv
 from pyasyncproxy.model.dto.ProxyContext import ProxyContext
@@ -30,7 +30,7 @@ with env.proxy_path.open("r") as f:
 nodes_map = ProxySimpleNodeFactory().collect_nodes()
 proxy_engine_factory = ProxySimpleEngineFactory(nodes_map)
 cache_client = CacheLocalClient()
-db_client = DbLocalClient()
+dynamic_ip_pool = DynamicIpLocalPool()
 proxy_engine = proxy_engine_factory.create_engine(proxy_tree)
 service = ProxySimpleService(proxy_engine)
 
@@ -42,7 +42,9 @@ async def forward_request(req: Request) -> Response:
     content = await req.body()
     request_id = snowflake.next_id()
     data = ProxyRequest(url=url, method=method, content=content, headers=req.headers)
-    ctx = ProxyContext(request_id=request_id, data=data, env=env, cache_client=cache_client, db_client=db_client)
+    ctx = ProxyContext(
+        request_id=request_id, data=data, env=env, cache_client=cache_client, dynamic_ip_pool=dynamic_ip_pool
+    )
     res = await service.forward_request(ctx)
     return Response(content=res.content, status_code=res.code, headers=res.headers, media_type=res.media_type)
 

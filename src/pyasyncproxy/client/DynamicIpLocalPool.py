@@ -7,14 +7,14 @@ import logging
 import pathlib
 from typing import override
 
-from pyasyncproxy.client.DbClient import DbClient
+from pyasyncproxy.client.DynamicIpPool import DynamicIpPool
 from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
 
 logger = logging.getLogger(__name__)
 
 
-class DbLocalClient(DbClient):
-    """local database client."""
+class DynamicIpLocalPool(DynamicIpPool):
+    """local dynamic ip pool."""
 
     def __init__(self) -> None:
         """Init."""
