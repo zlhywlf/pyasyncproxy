@@ -18,7 +18,7 @@ class ProxyStaticIpNode(ProxyNode):
     async def handle(self, ctx: ProxyContext) -> ProxyRouteChecker:
         if not ctx.first:
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.CACHE)
-        proxy_url = await ctx.dynamic_ip_pool.get_proxy_url()
+        proxy_url = await ctx.static_ip_pool.get_proxy_url()
         if not proxy_url:
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OVER)
         ctx.proxy_url = proxy_url
