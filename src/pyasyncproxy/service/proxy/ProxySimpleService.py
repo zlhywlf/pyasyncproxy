@@ -24,8 +24,7 @@ class ProxySimpleService(ProxyService):
 
     @override
     async def forward_request(self, request: ProxyRequest) -> ProxyResponse:
-        request_id = self._app_ctx.snowflake.next_id()
-        ctx = ProxyRequestContext(request_id=request_id, data=request, app=self._app_ctx)
+        ctx = ProxyRequestContext(request_id=self._app_ctx.request_id_factory(), data=request, app=self._app_ctx)
         return await self._engine.process(ctx)
 
     @override
