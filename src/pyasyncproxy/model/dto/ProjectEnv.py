@@ -7,7 +7,7 @@ import logging
 import logging.config
 import pathlib
 
-from pydantic import Field, TypeAdapter, ValidationInfo, computed_field, field_validator
+from pydantic import Field, ValidationInfo, computed_field, field_validator
 from pydantic_settings import BaseSettings
 
 from pyasyncproxy._version import version
@@ -61,6 +61,6 @@ class ProjectEnv(BaseSettings, env_prefix="PROXY_", env_file=".env", env_file_en
 
     @field_validator("proxy_auth", mode="before")
     @classmethod
-    def inject_proxy_auth(cls, v: str) -> dict[str, str]:
+    def inject_proxy_auth(cls, v: dict[str, str] | None) -> dict[str, str]:
         """Inject proxy auth."""
-        return TypeAdapter(dict[str, str]).validate_json(v)
+        return v if v else {}
