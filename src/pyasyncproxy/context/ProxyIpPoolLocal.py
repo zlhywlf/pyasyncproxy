@@ -40,9 +40,14 @@ class ProxyIpPoolLocal(ProxyIpPool):
 
     @override
     async def get_proxy_url(self) -> ProxyUrl | None:
-        url = self._pool[self._index]
-        self._index = (self._index + 1) % len(self._pool)
-        return url if url.is_alive else await self.get_proxy_url()
+        curr = self._index
+        while True:
+            url = self._pool[self._index]
+            self._index = (self._index + 1) % len(self._pool)
+            if url.is_alive:
+                return url
+            if self._index == curr:
+                return None
 
     @override
     async def add_proxy_url(self, proxy_url: ProxyUrl) -> None:
