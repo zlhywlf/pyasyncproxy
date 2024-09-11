@@ -37,7 +37,7 @@ class ProcessManager:
 
     def start(self) -> None:
         """Start process."""
-        cmd = " ".join(self._start_cmd)
+        cmd = " ".join(self._start_cmd) + " " + self._app
         print(self._env.project_banner)  # noqa: T201
         logger.info(f"The {self._app} will be launched through '{cmd}'")
         p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, shell=True)  # noqa: S602
