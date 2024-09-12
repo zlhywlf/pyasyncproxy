@@ -52,10 +52,9 @@ class ProjectEnv(BaseSettings, env_prefix="PROXY_", env_file=".env", env_file_en
         banner_path = info.data.get("banner_path")
         if not banner_path or not isinstance(banner_path, pathlib.Path):
             logger.warning(f"Configuration not supported: {banner_path}")
-            return ""
+            return cls._default_banner()
         if not banner_path.exists():
-            logger.warning(f"Configuration not found: {banner_path}")
-            return ""
+            return cls._default_banner()
         with banner_path.open("r") as f:
             return "".join(f.readlines())
 
@@ -64,3 +63,12 @@ class ProjectEnv(BaseSettings, env_prefix="PROXY_", env_file=".env", env_file_en
     def inject_proxy_auth(cls, v: dict[str, str] | None) -> dict[str, str]:
         """Inject proxy auth."""
         return v if v else {}
+
+    @classmethod
+    def _default_banner(cls) -> str:
+        return r"""
+ ____  _  _   __    ___  _  _  _  _  ___  ____  ____  _____  _  _  _  _
+(  _ \( \/ ) /__\  / __)( \/ )( \( )/ __)(  _ \(  _ \(  _  )( \/ )( \/ )
+ )___/ \  / /(__)\ \__ \ \  /  )  (( (__  )___/ )   / )(_)(  )  (  \  /
+(__)   (__)(__)(__)(___/ (__) (_)\_)\___)(__)  (_)\_)(_____)(_/\_) (__)
+"""
