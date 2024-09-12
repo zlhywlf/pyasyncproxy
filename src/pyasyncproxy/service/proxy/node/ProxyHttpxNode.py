@@ -32,13 +32,15 @@ class ProxyHttpxNode(ProxyNode):
                 "https://": httpx.AsyncHTTPTransport(proxy=proxy_url),
             }
         try:
-            async with httpx.AsyncClient(mounts=mounts, timeout=httpx.Timeout(timeout=ctx.data.timeout)) as client:
-                res = await client.request(
-                    method=ctx.data.method,
-                    url=ctx.data.url,
-                    headers=ctx.data.headers,
-                    content=ctx.data.content,
-                )
+            async with (
+                httpx.AsyncClient(mounts=mounts, timeout=httpx.Timeout(timeout=ctx.data.timeout)) as client,
+                client.stream(
+                    method=ctx.data.method, url=ctx.data.url, headers=ctx.data.headers, content=ctx.data.content
+                ) as r,
+            ):
+                status_code = r.status_code
+                headers = r.headers
+                content = b"".join([chunk async for chunk in r.aiter_raw()])
         except (httpx.ReadTimeout, httpx.WriteTimeout) as e:
             ctx.msg = str(e)
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
@@ -54,9 +56,9 @@ class ProxyHttpxNode(ProxyNode):
             curr_node_name=self.__class__.__name__,
             type=ProxyCheckerEnum.OK,
             response=ProxyResponse(
-                content=res.content,
-                code=res.status_code,
-                headers=res.headers,
-                media_type=res.headers.get("content-type"),
+                content=content,
+                code=status_code,
+                headers=headers,
+                media_type=headers.get("content-type"),
             ),
         )
