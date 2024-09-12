@@ -52,9 +52,9 @@ class ProjectEnv(BaseSettings, env_prefix="PROXY_", env_file=".env", env_file_en
         banner_path = info.data.get("banner_path")
         if not banner_path or not isinstance(banner_path, pathlib.Path):
             logger.warning(f"Configuration not supported: {banner_path}")
-            return cls._default_banner()
+            return cls.default_banner()
         if not banner_path.exists():
-            return cls._default_banner()
+            return cls.default_banner()
         with banner_path.open("r") as f:
             return "".join(f.readlines())
 
@@ -65,7 +65,8 @@ class ProjectEnv(BaseSettings, env_prefix="PROXY_", env_file=".env", env_file_en
         return v if v else {}
 
     @classmethod
-    def _default_banner(cls) -> str:
+    def default_banner(cls) -> str:
+        """Default banner."""
         return r"""
  ____  _  _   __    ___  _  _  _  _  ___  ____  ____  _____  _  _  _  _
 (  _ \( \/ ) /__\  / __)( \/ )( \( )/ __)(  _ \(  _ \(  _  )( \/ )( \/ )

@@ -40,9 +40,14 @@ def test_help(arg: str) -> None:
 
 
 @pytest.mark.parametrize(
-    ("banner", "data"), [("banner", None), ("", None), ("", {"banner_path": pathlib.Path.cwd() / "any.txt"})]
+    ("banner", "data", "expect"),
+    [
+        ("banner", None, "banner"),
+        ("", None, ProjectEnv.default_banner()),
+        ("", {"banner_path": pathlib.Path.cwd() / "any.txt"}, ProjectEnv.default_banner()),
+    ],
 )
-def test_project_env(banner: str, data: dict[str, Any] | None) -> None:
+def test_project_env(banner: str, data: dict[str, Any] | None, expect: str) -> None:
     """Test project env."""
 
     class Info(ValidationInfo):
@@ -80,7 +85,7 @@ def test_project_env(banner: str, data: dict[str, Any] | None) -> None:
     env = ProjectEnv()
     assert env.debug
     assert version in env.project_banner  # type:ignore[operator]
-    assert ProjectEnv.inject_banner(banner, Info(data)) == banner  # type:ignore[call-arg]
+    assert ProjectEnv.inject_banner(banner, Info(data)) == expect  # type:ignore[call-arg]
 
 
 def test_start(capsys: pytest.CaptureFixture[str]) -> None:
