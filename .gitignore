@@ -13,3 +13,4 @@ src/pyasyncproxy/_version.py
 .env
 *.log*
 *.csv
+banner.txt
