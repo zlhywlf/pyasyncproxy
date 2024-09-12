@@ -44,7 +44,7 @@ class ProxyHttpxNode(ProxyNode):
         except (httpx.ReadTimeout, httpx.WriteTimeout) as e:
             ctx.msg = str(e)
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
-        except (httpx.ConnectTimeout, httpx.ConnectError) as e:
+        except (httpx.ConnectTimeout, httpx.ConnectError, httpx.ProxyError) as e:
             if ctx.proxy_url:
                 ctx.proxy_url.is_alive = False
             if ctx.first:
