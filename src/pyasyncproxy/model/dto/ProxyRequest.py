@@ -7,15 +7,15 @@ from collections.abc import Mapping
 
 from pydantic import BaseModel
 
+from pyasyncproxy.model.po.ProxyUrl import ProxyUrl
+
 
 class ProxyRequest(BaseModel):
     """Request parameters for the route of /proxy."""
 
-    business_id: str | None = None
     url: str
     headers: Mapping[str, str]
     method: str
     content: bytes
-    timeout: float = 60 * 2
-    expiry: float = 60 * 30
     retry: int = 3
+    proxy_url: ProxyUrl | None = None

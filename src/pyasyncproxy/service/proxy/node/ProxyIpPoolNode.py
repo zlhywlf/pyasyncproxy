@@ -16,11 +16,11 @@ class ProxyIpPoolNode(ProxyNode):
 
     @override
     async def handle(self, ctx: ProxyRequestContext) -> ProxyRouteChecker:
-        if not ctx.first:
-            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.CACHE)
+        if ctx.proxy_url:
+            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OK)
         proxy_url = await ctx.app.ip_pool.get_proxy_url()
         if not proxy_url:
             ctx.msg = "Proxy IP exhausted"
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
         ctx.proxy_url = proxy_url
-        return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.CACHE)
+        return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OK)

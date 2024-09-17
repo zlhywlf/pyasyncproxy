@@ -33,12 +33,14 @@ class ProxyHttpxNode(ProxyNode):
             }
         try:
             async with (
-                httpx.AsyncClient(mounts=mounts, timeout=httpx.Timeout(timeout=ctx.data.timeout)) as client,
+                httpx.AsyncClient(mounts=mounts, timeout=httpx.Timeout(None)) as client,
                 client.stream(
                     method=ctx.data.method, url=ctx.data.url, headers=ctx.data.headers, content=ctx.data.content
                 ) as r,
             ):
                 status_code = r.status_code
+                if not ctx.data.proxy_url and ctx.proxy_url:
+                    r.headers["X-PROXY-URL"] = f"proxy:{ctx.proxy_url.model_dump_json()}"
                 headers = r.headers
                 content = b"".join([chunk async for chunk in r.aiter_raw()])
         except (httpx.ReadTimeout, httpx.WriteTimeout) as e:
@@ -47,7 +49,7 @@ class ProxyHttpxNode(ProxyNode):
         except (httpx.ConnectTimeout, httpx.ConnectError, httpx.ProxyError) as e:
             if ctx.proxy_url:
                 ctx.proxy_url.is_alive = False
-            if ctx.first:
+            if not ctx.data.proxy_url:
                 ctx.data.retry -= 1
                 return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OVER)
             ctx.msg = str(e)
