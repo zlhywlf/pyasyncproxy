@@ -60,7 +60,9 @@ class ProxyAuthBackend(AuthenticationBackend):
         _, _, proxy_url = decoded.partition(":")
         k = env.forward_url_key.encode()
         if not any(_[0] == k for _ in conn.scope["headers"]):
-            conn.scope["headers"].append((k, conn.scope["raw_path"]))
+            query_string = conn.scope["query_string"]
+            url = b"?".join([conn.scope["raw_path"], query_string]) if query_string else conn.scope["raw_path"]
+            conn.scope["headers"].append((k, url))
         conn.scope["raw_path"] = b"/proxy"
         conn.scope["path"] = "/proxy"
         return AuthCredentials(["proxy"]), SimpleUser(proxy_url)
