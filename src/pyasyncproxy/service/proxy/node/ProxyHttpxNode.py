@@ -40,7 +40,8 @@ class ProxyHttpxNode(ProxyNode):
             ):
                 status_code = r.status_code
                 if not ctx.data.proxy_url and ctx.proxy_url:
-                    r.headers["X-PROXY-URL"] = f"proxy:{ctx.proxy_url.model_dump_json()}"
+                    h_proxy_url = f"{ctx.app.env.project_name}:{ctx.proxy_url.model_dump_json()}"
+                    r.headers[ctx.app.env.forward_url_key] = h_proxy_url
                 headers = r.headers
                 content = b"".join([chunk async for chunk in r.aiter_raw()])
         except (httpx.ReadTimeout, httpx.WriteTimeout) as e:
@@ -49,8 +50,10 @@ class ProxyHttpxNode(ProxyNode):
         except (httpx.ConnectTimeout, httpx.ConnectError, httpx.ProxyError) as e:
             if ctx.proxy_url:
                 ctx.proxy_url.is_alive = False
+                await ctx.app.ip_pool.update_proxy_url(ctx.proxy_url)
             if not ctx.data.proxy_url:
                 ctx.data.retry -= 1
+                ctx.proxy_url = None
                 return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.OVER)
             ctx.msg = str(e)
             return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)

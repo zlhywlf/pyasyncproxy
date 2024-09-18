@@ -9,6 +9,7 @@ from pydantic import BaseModel
 class ProxyUrl(BaseModel):
     """proxy url."""
 
+    index: int
     category: str
     protocol: str
     ip: str

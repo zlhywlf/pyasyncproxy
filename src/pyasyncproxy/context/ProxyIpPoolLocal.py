@@ -18,8 +18,9 @@ class ProxyIpPoolLocal(ProxyIpPool):
 
     def __init__(self) -> None:
         """Init."""
-        self._index = 0
-        self._pool: list[ProxyUrl] = []
+        super().__init__()
+        self._pool: dict[int, ProxyUrl] = {}
+        self._id_counter = 0
         data_path = pathlib.Path.cwd() / "ip.csv"
         if not data_path.exists():
             logger.warning(f"{data_path} not found")
@@ -27,33 +28,37 @@ class ProxyIpPoolLocal(ProxyIpPool):
         with data_path.open("r") as f:
             for line in f.readlines():
                 row = line.split(",")
-                self._pool.append(
-                    ProxyUrl(
-                        category=row[0],
-                        protocol=row[1],
-                        ip=row[2],
-                        port=int(row[3]),
-                        adr=row[4],
-                        is_alive=bool(row[5]),
-                    )
+                proxy_url = ProxyUrl(
+                    index=self._id_counter,
+                    category=row[0],
+                    protocol=row[1],
+                    ip=row[2],
+                    port=int(row[3]),
+                    adr=row[4],
+                    is_alive=bool(row[5]),
                 )
-
-    @override
-    async def get_proxy_url(self) -> ProxyUrl | None:
-        curr = self._index
-        while True:
-            url = self._pool[self._index]
-            self._index = (self._index + 1) % len(self._pool)
-            if url.is_alive:
-                return url
-            if self._index == curr:
-                return None
+                self._pool[self._id_counter] = proxy_url
+                self._id_counter += 1
 
     @override
     async def add_proxy_url(self, proxy_url: ProxyUrl) -> None:
-        self._pool.append(proxy_url)
+        proxy_url.index = self._id_counter
+        self._pool[self._id_counter] = proxy_url
+        self._id_counter += 1
         logger.info(proxy_url)
 
     @override
     async def get_proxy_pool(self) -> list[ProxyUrl]:
-        return self._pool
+        return list(self._pool.values())
+
+    @override
+    async def get_curr_proxy_url(self) -> ProxyUrl | None:
+        return self._pool.get(self.index)
+
+    @override
+    async def get_proxy_pool_length(self) -> int:
+        return len(self._pool)
+
+    @override
+    async def update_proxy_url(self, proxy_url: ProxyUrl) -> None:
+        self._pool[proxy_url.index] = proxy_url
