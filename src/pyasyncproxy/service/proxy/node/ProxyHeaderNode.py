@@ -17,7 +17,10 @@ class ProxyHeaderNode(ProxyNode):
     @override
     async def handle(self, ctx: ProxyRequestContext) -> ProxyRouteChecker:
         data = ctx.data
-        data.url = data.headers.get(ctx.app.env.forward_url_key) or data.url
+        data.url = data.headers.get(ctx.app.env.forward_url_key) or ""
+        if not data.url:
+            ctx.msg = f"{ctx.app.env.forward_url_key} must be given"
+            return ProxyRouteChecker(curr_node_name=self.__class__.__name__, type=ProxyCheckerEnum.ERROR)
         retry = data.headers.get(ctx.app.env.forward_retry_key)
         if retry and not retry.isdigit():
             ctx.msg = f"{ctx.app.env.forward_retry_key} must be digit"

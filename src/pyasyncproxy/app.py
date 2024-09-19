@@ -28,7 +28,10 @@ async def forward_request(req: Request) -> Response:
         url="", method=req.method, content=await req.body(), headers=req.headers, proxy_url=proxy_url
     )
     res = await service.forward_request(request)
-    return Response(content=res.content, status_code=res.code, headers=res.headers, media_type=res.media_type)
+    response = Response(content=res.content, status_code=res.code, media_type=res.media_type)
+    if res.headers:
+        response.raw_headers = res.headers
+    return response
 
 
 async def get_proxy_pool(req: Request) -> Response:  # noqa: ARG001

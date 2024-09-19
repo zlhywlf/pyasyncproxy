@@ -42,7 +42,8 @@ class ProxyHttpxNode(ProxyNode):
                 if not ctx.data.proxy_url and ctx.proxy_url:
                     h_proxy_url = f"{ctx.app.env.project_name}:{ctx.proxy_url.model_dump_json()}"
                     r.headers[ctx.app.env.forward_url_key] = h_proxy_url
-                headers = r.headers
+                media_type = r.headers["content-type"]
+                headers = r.headers.raw
                 content = b"".join([chunk async for chunk in r.aiter_raw()])
         except (httpx.ReadTimeout, httpx.WriteTimeout) as e:
             ctx.msg = str(e)
@@ -64,6 +65,6 @@ class ProxyHttpxNode(ProxyNode):
                 content=content,
                 code=status_code,
                 headers=headers,
-                media_type=headers.get("content-type"),
+                media_type=media_type,
             ),
         )
